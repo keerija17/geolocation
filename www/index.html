@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+ <title>Leaflet Tutorial</title>
+ <meta charset="utf-8" />
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <link rel="stylesheet" href="js/jquery.mobile-1.4.5.css">
+ <script src="js/jquery.js"></script>
+ <script src="js/jquery.mobile-1.4.5.js"></script>
+ <link rel="stylesheet" href="leaflet/leaflet.css"/>
+ <script src="leaflet/leaflet.js"></script>
+ <!-- Load Leaflet from CDN -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
+    integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
+    crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
+    integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
+    crossorigin=""></script>
+
+
+    <!-- Load Esri Leaflet from CDN -->
+    <script src="https://unpkg.com/esri-leaflet@2.2.4/dist/esri-leaflet.js"
+    integrity="sha512-tyPum7h2h36X52O2gz+Pe8z/3l+Y9S1yEUscbVs5r5aEY5dFmP1WWRY/WLLElnFHa+k1JBQZSCDGwEAnm2IxAQ=="
+    crossorigin=""></script>
+
+
+  <!-- Load Esri Leaflet Geocoder from CDN -->
+  <link rel="stylesheet" href="https://unpkg.com/esri-leaflet-geocoder@2.2.13/dist/esri-leaflet-geocoder.css"
+    integrity="sha512-v5YmWLm8KqAAmg5808pETiccEohtt8rPVMGQ1jA6jqkWVydV5Cuz3nJ9fQ7ittSxvuqsvI9RSGfVoKPaAJZ/AQ=="
+    crossorigin="">
+  <script src="https://unpkg.com/esri-leaflet-geocoder@2.2.13/dist/esri-leaflet-geocoder.js"
+    integrity="sha512-zdT4Pc2tIrc6uoYly2Wp8jh6EPEWaveqqD3sT0lf5yei19BC1WulGuh5CesB0ldBKZieKGD7Qyf/G0jdSe016A=="
+    crossorigin=""></script>
+
+  <style>
+    body { margin:0; padding:0; }
+    #map { position: absolute; top:0; bottom:0; right:0; left:0; }
+  </style> 
+</head>
+<body>
+<body>
+  <div data-role="page" id="mainpage" data-theme="b">
+     <div data-role="header">
+	<h1>Main Menu</h1>
+     </div>
+	   <div role="main" class="ui-content">
+	    <a href="#pageone" data-transition="slide" class="ui-btn">My Location</a>
+	    <a href="#pagetwo" data-transition="slide" class="ui-btn">Search Location</a>
+	    <a href="../MobileHomeworks/Around.html" data-transition="slide" class="ui-btn">What's nearby</a>
+	   </div>
+      <!--close header-->
+
+  </div> <!--end of main window-->
+  
+  <!--My location-->
+ <div data-role="page" id="pageone" data-theme="b">
+   <div data-role="header">
+	<h1>My Location</h1>
+   </div>
+   <div role="main" class="ui-content">
+	<div id="mapid" style="height: 400px;">
+	</div>
+	<script type="text/javascript">
+
+  	if(navigator.geolocation==undefined){
+  		alert("Geolocation undefined");
+
+  	}else{
+  		
+  		navigator.geolocation.getCurrentPosition(userLocated,locationError);
+  		
+  		function userLocated(position){
+  			var latitude=position.coords.latitude;
+  			var longitude=position.coords.longitude;
+  			var mymap = L.map('mapid').setView([latitude, longitude], 16);
+L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {maxZoom: 19,attribution: 'Map data &copy;'+'<a href="https://www.openstreetmap.org/">OpenStreetMap</a>'+'contributors,<a href="https://creativecommons.org/licenses'+'/by-sa/2.0/">CC-BY-SA</a>,Imagery © <a href="https://'+'www.mapbox.com/">Mapbox<a>',id: 'mapbox.streets',accessToken:'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYyc'+'XBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw'}).addTo(mymap);
+
+var marker = L.marker([latitude, longitude]).addTo(mymap);
+marker.bindPopup("You are here").openPopup();
+var circle = L.circle([latitude, longitude], {
+color: 'red',
+fillColor: '#f03',
+fillOpacity: 0.5,
+radius: 100
+}).addTo(mymap);
+circle.bindPopup("You are here");
+  		}
+
+  		function locationError(error){
+  			switch(error.code){
+  				case error.PERMISSION_DENIED:
+  				   alert("Permission Denied- " + error.message);
+  				   break;
+  				case error.POSITION_UNAVAILABLE:
+  				   alert("Position not Available- "+ error.message);
+  				   break;
+  				case error.TIMEOUT:
+  				   alert("Request Timed Out- " + error.message);
+  				   break;
+  				   }
+
+  		}
+  		
+
+  	}
+  </script>
+       <a href="#mainpage" data-transition="slide" class="ui-btn">Back to home page</a>
+       
+    </div> <!---close main-->
+ </div>
+
+ <!--search location-->
+<div data-role="page" id="pagetwo" data-theme="a">
+ <div data-role="header">
+  <h2>Search location</h2>
+ </div>
+     <div role="main" class="ui-content">
+	<div id="map"></div>
+
+<script>
+if(navigator.geolocation==undefined){
+  		alert("Geolocation undefined");
+
+  	}else{
+navigator.geolocation.getCurrentPosition(userLocated,locationError); //get the current position of the user 
+function userLocated(position) {
+var latitude = position.coords.latitude; // store the cordinate of the latitude
+var longitude = position.coords.longitude; // store the cordinate of the latitude
+var map = L.map('map').setView([latitude, longitude], 12);
+var marker = L.marker([latitude, longitude]).addTo(map);
+   marker.bindPopup("You are here").openPopup();
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'}).addTo(map);
+
+var searchControl = L.esri.Geocoding.geosearch().addTo(map);
+var results = L.layerGroup().addTo(map);
+searchControl.on('results', function(data){
+    results.clearLayers();
+    for (var i = data.results.length - 1; i >= 0; i--) {
+      results.addLayer(L.marker(data.results[i].latlng));
+    }
+  });
+}
+function locationError(error) {
+alert(error.code); // if it encounter any error , this line catches the error an alert it to the user.
+}
+
+}
+
+
+</script>
+  </div>
+</div>
+
+</div>
+</body>
+</html> 
